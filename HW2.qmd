@@ -1,0 +1,182 @@
+---
+title: "HW2_Base_R"
+author: "Chris Hill"
+format: html
+editor: visual
+---
+
+## Task 1: Basic Vector Practice
+
+Create two vectors. One vector corresponding to the pre measurements and one to the post measurements.
+
+Assign names to the vector elements using the paste() function.
+
+```{r}
+pre_treatment <- c(120, 151, 125, 126, 115, 132, 132, 129, 134, 139, 127, 122, 127, 135, 133, 128, 147, 138, 140, 132)
+
+post_treatment <- c(127, 145, 135, 122, 115, 122, 123, 126, 126, 129, 132, 146, 120, 114, 121, 120, 128, 120, 133, 115)
+
+patient_names <- paste("Subject", 1:20, sep = "_")
+
+names(pre_treatment) <- patient_names
+names(post_treatment) <- patient_names
+```
+
+```{r}
+pre_treatment
+```
+
+```{r}
+post_treatment
+```
+
+Calculate the change in blood pressure for each patient by subtracting post-treatment measurements from pre-treatment measurements.
+
+```{r}
+bp_change <- pre_treatment - post_treatment
+bp_change
+```
+
+Calculate the average decrease in blood pressure across all patients
+
+```{r}
+mean_change <- mean(bp_change)
+mean_change
+```
+
+Determine which patients experienced a decrease in blood pressure after treatment (a positive change). Use the which() function to just return the indices (and names) associated with this type of change.
+
+```{r}
+patients_with_decrease <- which(bp_change > 0)
+
+patients_with_decrease_names <- names(bp_change)[patients_with_decrease]
+
+patients_with_decrease_names
+```
+
+Subset the vector of differences to only return those that have a positive change. 
+
+```{r}
+bp_decreased <- bp_change[bp_change > 0]
+
+bp_decreased
+```
+
+Calculate the average decrease in blood pressure for those where the blood pressure decreased (positive
+change).
+
+```{r}
+mean_bp_decrease <- mean(bp_decreased)
+
+mean_bp_decrease
+```
+
+## Task 2: Basic Data Frame Practice
+
+Create a data frame object with four columns corresponding to your data above: 
+
+- patient
+- pre_bp
+- post_bp
+- diff_bp
+
+```{r}
+bp_df <- data.frame(
+  patient = patient_names,
+  pre_bp = pre_treatment,
+  post_bp = post_treatment,
+  diff_bp = pre_treatment - post_treatment
+)
+
+bp_df
+```
+
+Return only rows of the data frame where the diff_bp column is negative. (Use [ or learn about the subset() function if you’d like. If you use [, don’t reference the original vector from the first part, access the column of the data frame to make your comparison with 0.)
+
+```{r}
+negative_diff_rows <- bp_df[bp_df$diff_bp < 0, ]
+
+negative_diff_rows
+```
+
+```{r}
+negative_diff_rows_subset <- subset(bp_df, diff_bp < 0)
+
+negative_diff_rows_subset
+```
+
+Add a new column to the data frame corresponding to TRUE if the post_bp is less than 120 and FALSE
+if it is not. Similar to the previous question, don’t reference the original vector from task 1, access the
+column of the data frame to make your comparison
+
+```{r}
+bp_df$below_120 <- bp_df$post_bp < 120
+
+bp_df
+```
+
+Print the data frame out nicely in your final document
+
+```{r}
+knitr::kable(bp_df)
+```
+
+## Task 3: List Practice
+
+Create a new data frame with the given placebo data in it that is similar to the data frame from task 2 (including the new column of TRUE/FALSE values).
+
+```{r}
+pre_treatment_placebo <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+post_treatment_placebo <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+subject_names_placebo <- paste("Subject", 1:10, sep = "_")
+
+placebo_df <- data.frame(
+  patient = subject_names_placebo,
+  pre_bp = pre_treatment_placebo,
+  post_bp = post_treatment_placebo,
+  diff_bp = pre_treatment_placebo - post_treatment_placebo,
+  below_120 = pre_treatment_placebo < 120
+)
+
+placebo_df
+```
+
+Now create and store a list with two elements:
+
+- 1st element named treatment and contains the first data frame you created.
+- 2nd element named placebo and contains the second data frame you created.
+
+```{r}
+experiment_list <- list(
+  treatment = bp_df,
+  placebo = placebo_df
+)
+
+str(experiment_list)
+```
+
+Access the first list element using different types of syntax (the result can be a list or just the data frame).
+
+```{r}
+experiment_list[[1]]
+```
+
+```{r}
+experiment_list$treatment
+```
+
+```{r}
+experiment_list[["treatment"]]
+```
+
+```{r}
+experiment_list[1]
+```
+
+Use your list from question 2. In one line of code, access the pre_bp column of the placebo data frame.
+
+```{r}
+experiment_list$placebo$pre_bp
+```
+
